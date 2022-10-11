@@ -1,10 +1,28 @@
-# hello-world
-Test repository
+# Historical CO2 Data Repository
 
-Hello -  this is a new readme file. 
+Based on the owid/co2-data repository, this project provides tools for analyzing and visualizing the data on CO2 emissions by country and year, with the aim of identifying correlations between economic development, population, industry activity, and climate impact. 
 
-### what does this do?
-There are six levels of titling. 
+## Main features
+Import data from a local file in CSV format
+
+Define function to summarize data at the country level, including timespan of available data and growth rates for selected columns from the data
+
+Retrieve growth rates only for defined columns at the country level
+
+Calculate growth factors to describe the relationship between data, e.g. how are GDP and CO2 emissions related?
+
+Calculate growth factors for subsets of the data, e.g. how do relationships between data change for top and bottom quantiles?
 
 
-We can continue to build this out. I am starting to understand version control in this setting.
+## Features to be developed
+API connection to data
+
+JSON ingestion
+
+CAGR 
+
+Projections for data
+
+GUI with column selection, visualization, exporting capabilities
+
+Webpage/dashboard 
