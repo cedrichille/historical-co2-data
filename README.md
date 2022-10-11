@@ -26,3 +26,15 @@ Projections for data
 GUI with column selection, visualization, exporting capabilities
 
 Webpage/dashboard 
+
+
+### Analyses to be conducted using the app
+How are population and emissions related at different country sizes?
+
+How are GDP and emissions related at different economic development levels? Is there a decoupling? 
+
+Ranking cumulative emissions contributors
+
+Ranking net importers and exporters of emissions
+
+Trends in import and export of emissions, e.g. do countries switch as they develop?
