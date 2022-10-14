@@ -4,6 +4,21 @@ from matplotlib import pyplot as plt
 import requests
 
 
+def growth_factor(original_data, factor_columns):
+    if len(factor_columns) != 2:
+        raise ValueError('factor_columns must contain only two columns')
+    col_growth_names = []
+    for col in factor_columns:
+        col_growth_names.append(str(col + ' % growth'))
+    factor_df = growth_rates(original_data, factor_columns)
+    factor_col_name = (str(factor_columns[1]) + ' / ' + str(factor_columns[0]) + ' growth factor')
+    factor_df[factor_col_name] = \
+        (factor_df[col_growth_names[1]] / factor_df[col_growth_names[0]])
+    neg_growth = factor_df[col_growth_names[0]] > 0
+    factor_df[factor_col_name].where(neg_growth, -factor_df[factor_col_name], inplace=True)
+    return factor_df
+
+
 def growth_quantile(original_data, factor_columns, start_quantile, end_quantile):
     col_growth_names = []
     for col in factor_columns:
