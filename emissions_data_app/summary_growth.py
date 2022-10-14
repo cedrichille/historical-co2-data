@@ -2,82 +2,175 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 import requests
-
-# ---------------------------------------------SUMMARY TABLE------------------------------------------------------------
-# create a table that summarizes average population and GDP, min and max population and GDP for each country
-# and shows the max and min years of available data + min and max population and gdp years
-
-# find average population and gdp per country
-# ave_pop = pd.DataFrame(co2_data.groupby('country')['population'].mean()) \
-#     .rename(columns={'population': 'average population'})
-# ave_gdp = pd.DataFrame(co2_data.groupby('country')['gdp'].mean()) \
-#     .rename(columns={'gdp': 'average gdp'})
-# # find min and max year of available data per country
-# min_year = pd.DataFrame(co2_data.groupby('country')['year'].min()) \
-#     .rename(columns={'year': 'first year'})
-# max_year = pd.DataFrame(co2_data.groupby('country')['year'].max()) \
-#     .rename(columns={'year': 'last year'})
+from download_data import co2_data
 
 
-# - function to find year of earliest and latest available data for a certain column, and corresponding data points -
-def summary_data(original_data, column_names):
+def find_earliest_data(original_data, column_name):
+    """
+    Takes the full data set and a column, returns the earliest available data and corresponding year for each country
+
+    The function begins by removing nulls from the column, so only rows with available data are shown.
+    Then, the index of the earliest data point is found by identifying the index of the minimum year of available data.
+    Finally, the earliest data point itself is found.
+
+    The function returns a dataframe with the earliest data point and corresponding year for each country.
+    :param original_data: pass the original, unaltered owid co2 data dataframe that was downloaded from the owid GitHub
+    :param column_name: the name of the column in the co2 data set for which you want the earliest available data
+    :return: dataframe with the earliest data and corresponding year for each country in the data set
+    """
+    # remove nulls from the selected column in the original data set and assign to a new df
+
+    drop_nan = original_data[~original_data[column_name].isnull()]
+
+    #  find the index of the minimum year for each country and assign to df
+
+    earliest_year_index = drop_nan.groupby('country')['year'].idxmin()
+
+    # extract rows from original dataframe using the earliest indexes and save as new df
+    # with renamed columns labeling as earliest data and country as index
+
+    earliest_data_df = pd.DataFrame(original_data.iloc[earliest_year_index][['country', 'year', column_name]])
+    earliest_data_df.rename(columns={'year': 'earliest ' + column_name + ' year',
+                                     column_name: 'earliest ' + column_name}, inplace=True)
+    earliest_data_df.set_index('country', inplace=True)
+
+    return earliest_data_df
+
+
+def find_latest_data(original_data, column_name):
+    """
+    Takes the full data set and a column, returns the latest available data and corresponding year for each country
+
+    The function begins by removing nulls from the column, so only rows with available data are shown.
+    Then, the index of the latest data point is found by identifying the index of the maximum year of available data.
+    Finally, the latest data point itself is found.
+
+    The function returns a dataframe with the latest data point and corresponding year for each country.
+    :param original_data: pass the original, unaltered owid co2 data dataframe that was downloaded from the owid GitHub
+    :param column_name: the name of the column in the co2 data set for which you want the latest available data
+    :return: dataframe with the latest data and corresponding year for each country in the data set
+    """
+    # remove nulls from the selected column in the original data set and assign to a new df
+
+    drop_nan = original_data[~original_data[column_name].isnull()]
+
+    #  find the index of the minimum year for each country and assign to df
+
+    latest_year_index = drop_nan.groupby('country')['year'].idxmax()
+
+    # extract rows from original dataframe using the latest indexes and save as new df with
+    # renamed columns labeling as latest data and country as index
+
+    latest_data_df = pd.DataFrame(original_data.iloc[latest_year_index][['country', 'year', column_name]])
+    latest_data_df.rename(columns={'year': 'latest ' + column_name + ' year',
+                                   column_name: 'latest ' + column_name}, inplace=True)
+    latest_data_df.set_index('country', inplace=True)
+
+    return latest_data_df
+
+
+def column_summary(original_data, column_name):
+    """
+
+    :param original_data: pass the original, unaltered owid co2 data dataframe that was downloaded from the owid GitHub
+    :param column_name: the name of the column in the co2 data set for which you want the summary
+    :return: dataframe summarizing the earliest and latest available data and corresponding years for each country
+    """
+
+    # find the earliest available data and corresponding year for each column
+    earliest_data_df = find_earliest_data(original_data, column_name)
+
+    # find the latest available data and corresponding year for each column
+    latest_data_df = find_latest_data(original_data, column_name)
+
+    # concatenate dataframes to create a summary
+    summary_df = pd.concat([earliest_data_df, latest_data_df], join='outer', axis=1)
+    columns_to_int = ['earliest ' + column_name + ' year', 'latest ' + column_name + ' year']
+    summary_df[columns_to_int] = summary_df[columns_to_int].astype(pd.Int64Dtype())
+
+    return summary_df
+
+
+def add_growth_column(summary_dataframe, column_name):
+    """
+    Takes the summary table for a column and returns a dataframe with an added column calculating growth rate
+
+    The growth rate refers to the simple percent change between the earliest available data and latest available
+    data.
+
+    :param summary_dataframe: the dataframe generated by the column_summary function
+    :param column_name: name of the column for which a growth rate should be calculated
+    :return: original summary dataframe with an added column showing growth rate for each country
+    """
+
+    # create a copy of the summary_df generated by column_summary function
+    summary_df = summary_dataframe
+
+    # add a column that calculates the percent change between earliest and latest available data
+    summary_df[column_name + ' % growth'] = \
+        ((summary_df['latest ' + column_name] - summary_df['earliest ' + column_name]) /
+         summary_df['earliest ' + column_name])
+
+    # rename dataframe to clarify that it contains a growth element
+    summary_df_with_growth = summary_df
+
+    return summary_df_with_growth
+
+
+def create_combined_summary(original_data, column_names):
+    """
+    Takes the full co2 data set and a set of columns, returns a table summarizing those columns for each country
+
+    :param original_data: pass the original, unaltered owid co2 data dataframe that was downloaded from the owid GitHub
+    :param column_names: the names of the columns in the co2 data set which you want to include in the summary table
+    :return: a single dataframe with a summary of earliest and latest data and growth rates for the passed columns
+    for all countries
+    """
+    # create a dictionary that will contain the names of the summary dataframes for each column
     df_dict = {}
+
+    # iterate through the passed columns to create summary dataframes for each and add each to the dictionary
     for col in column_names:
-        # remove nulls from column so only years with data are available
-        drop_nan = original_data[~original_data[col].isnull()]
-        # find indexes of earliest and latest data for each country
-        earliest_year_idx = drop_nan.groupby('country')['year'].idxmin()
-        latest_year_idx = drop_nan.groupby('country')['year'].idxmax()
-        # extract rows from original dataframe using the earliest indexes and save as new df
-        earl_data = pd.DataFrame(original_data.iloc[earliest_year_idx][['country', 'year', col]])
-        earl_data.rename(columns={'year': 'earliest ' + col + ' year',
-                                  col: 'earliest ' + col}, inplace=True)
-        earl_data.set_index('country', inplace=True)
-        # extract rows from original dataframe using the latest indexes and save as new df
-        late_data = pd.DataFrame(original_data.iloc[latest_year_idx][['country', 'year', col]])
-        late_data.rename(columns=
-                         {'year': 'latest ' + col + ' year', col: 'latest ' + col}, inplace=True)
-        late_data.set_index('country', inplace=True)
-        # concat dataframes to create a summary
-        df_dict['summary_' + col] = pd.concat([earl_data, late_data], join='outer', axis=1)
-        cols_int = ['earliest ' + col + ' year', 'latest ' + col + ' year']
-        df_dict['summary_' + col][cols_int] = df_dict['summary_' + col][cols_int].astype(pd.Int64Dtype())
+        # create a summary dataframe for the columns
+        summary_col_dataframe = column_summary(original_data, col)
+
         # add a growth % column
-        df_dict['summary_' + col][col + ' % growth'] = ((df_dict['summary_' + col]['latest ' + col] -
-                                                         df_dict['summary_' + col]['earliest ' + col]) /
-                                                        df_dict['summary_' + col]['earliest ' + col])
-    #                                                        .apply('{:,.2%}'.format)
-    summary = pd.concat(df_dict, join='outer', axis=1)
-    summary = summary.droplevel(level=0, axis=1)
-    summary = summary.replace(np.inf, np.NaN)
-    return summary
+        df_dict['summary_' + col] = add_growth_column(summary_col_dataframe, col)
+
+    # concatenate the dataframes included in the dictionary
+    combined_summary = pd.concat(df_dict, join='outer', axis=1)
+    combined_summary = combined_summary.droplevel(level=0, axis=1)
+    combined_summary = combined_summary.replace(np.inf, np.NaN)
+
+    return combined_summary
 
 
-def growth_rates(original_data, column_names):
+def show_growth_rates(original_data, column_names):
+    """
+    Takes the full co2 data and a selection of columns, and returns only the growth rates for each column and country
+
+    The purpose of the function is to give an easy one-step method to find just the percent change from earliest to
+    latest available data for a certain column of data without the table being cluttered by the earliest and latest
+    data and the corresponding years, as is the case in the combined_summary df.
+
+    :param original_data: pass the original, unaltered owid co2 data dataframe that was downloaded from the owid GitHub
+    :param column_names: the names of the columns in the co2 data set for which you want the growth rates
+    :return: a single dataframe with the growth rates for the passed columns for all countries
+    """
+    # initiate a list to hold the names of the columns containing the growth % data in the combined_summary table from
+    # the create_combined_summary function
     col_growth_names = []
+
+    # iterate through the passed column names to add the required growth % column names to the list
     for col in column_names:
         col_growth_names.append(str(col + ' % growth'))
-    growth_columns = summary_data(original_data, column_names)[col_growth_names]
+
+    # run the function to create the combined_summary dataframe, and then extract the growth % columns
+    growth_columns = create_combined_summary(original_data, column_names)[col_growth_names]
+
     return growth_columns
 
 
-# reference dataframe
-# print(summary_data(co2_data,['population', 'gdp', 'co2']).loc['Montenegro'])
-# print(growth_rates(co2_data,['population','gdp','co2']))
-
-
-# -------------------------------- CO2 and CO2 per Capita Growth ----------------------------------
-# Find correlation between CO2 and population trends
-def growth_factor(original_data, factor_columns):
-    if len(factor_columns) != 2:
-        raise ValueError('factor_columns must contain only two columns')
-    col_growth_names = []
-    for col in factor_columns:
-        col_growth_names.append(str(col + ' % growth'))
-    factor_df = growth_rates(original_data, factor_columns)
-    factor_col_name = (str(factor_columns[1]) + ' / ' + str(factor_columns[0]) + ' growth factor')
-    factor_df[factor_col_name] = \
-        (factor_df[col_growth_names[1]] / factor_df[col_growth_names[0]])
-    neg_growth = factor_df[col_growth_names[0]] > 0
-    factor_df[factor_col_name].where(neg_growth, -factor_df[factor_col_name], inplace=True)
-    return factor_df
+# testing functions
+# print(create_combined_summary(co2_data, ['population', 'gdp', 'co2']).loc['Montenegro'])
+# print(show_growth_rates(co2_data, ['population', 'gdp', 'co2']))
