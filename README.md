@@ -14,20 +14,6 @@ Calculate growth factors to describe the relationship between data, e.g. how are
 Calculate growth factors for subsets of the data, e.g. how do relationships between data change for top and bottom quantiles?
 
 
-## Features to be developed
-API connection to data
-
-JSON ingestion
-
-CAGR 
-
-Projections for data
-
-GUI with column selection, visualization, exporting capabilities
-
-Webpage/dashboard 
-
-
 ### Analyses to be conducted using the app
 How are population and emissions related at different country sizes?
 
