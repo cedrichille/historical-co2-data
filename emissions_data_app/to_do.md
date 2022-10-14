@@ -1,12 +1,20 @@
 # Development to-do
 
 ## download_data.py
+- MT: JSON ingestion to learn how to transform JSON to dataframe
 
 ## summary_growth.py
-- add a feature to earliest data and latest data functions that checks if data is zero and finds first non-zero data point
-- add error handling for function inputs, such as if summary_dataframe is not type pd.df in add_growth_column
-- functions like show_growth_rates should be able to handle no columns being provided, in which case they show all column growth rates
+- ST: add a feature to earliest data and latest data functions that checks if data is zero and finds first non-zero data point
+- MT: add error handling for function inputs, such as if summary_dataframe is not type pd.df in add_growth_column
+- ST: functions like show_growth_rates should be able to handle no columns being provided, in which case they show all column growth rates
 
-## quantile_growth.py
+## growth_analysis.py
+- ST: fix quantile selection
+- MT: improve graphics output through better legends and adding lines of best fit
+- LT: support for pct change and CAGR calculations between given years
+
 
 ## other
+- MT: Projections for data
+- LT: GUI with column search and selection, visualization, exporting capabilities
+- LT: Host dashboard on webpage 
