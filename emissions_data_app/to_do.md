@@ -9,11 +9,11 @@
 - ST: functions like show_growth_rates should be able to handle no columns being provided, in which case they show all column growth rates
 
 ## growth_analysis.py
-- ST: fix quantile selection
-- MT: is it correct to dropna() in quantile group calculations?
+- ST: grouped mean multiplier output verification
+- ST: is it correct to dropna() in quantile group calculations?
 - ST: support for pct change and CAGR calculations between given years
 - MT: improve graphics output through better legends and adding lines of best fit
-- MT: grouped mean multiplier output verification 
+
 
 
 ## other
