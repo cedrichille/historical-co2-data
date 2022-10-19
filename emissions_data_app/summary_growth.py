@@ -71,6 +71,7 @@ def find_latest_data(original_data, column_name):
 
 def column_summary(original_data, column_name):
     """
+    Takes the full data set and a column, returns a df summarizing data and its availability for all countries
 
     :param original_data: pass the original, unaltered owid co2 data dataframe that was downloaded from the owid GitHub
     :param column_name: the name of the column in the co2 data set for which you want the summary
@@ -119,7 +120,7 @@ def add_growth_column(summary_dataframe, column_name):
 
 def create_combined_summary(original_data, column_names):
     """
-    Takes the full co2 data set and a set of columns, returns a table summarizing those columns for each country
+    Takes the full data set and a set of columns, returns a df summarizing data for each country, including growth rates
 
     :param original_data: pass the original, unaltered owid co2 data dataframe that was downloaded from the owid GitHub
     :param column_names: the names of the columns in the co2 data set which you want to include in the summary table
@@ -169,7 +170,6 @@ def show_growth_rates(original_data, column_names):
     growth_columns = create_combined_summary(original_data, column_names)[col_growth_names]
 
     return growth_columns
-
 
 # testing functions
 # print(create_combined_summary(co2_data, ['population', 'gdp', 'co2']).loc['Montenegro'])
