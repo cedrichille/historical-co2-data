@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import requests
 from download_data import co2_data
 import summary_growth as sg
+import utils as u
 
 
 def find_multiplier(original_data, mult_columns):
@@ -29,7 +30,7 @@ def find_multiplier(original_data, mult_columns):
         col_growth_names.append(str(col + ' % growth'))
 
     # run the sg.show_growth_rates function to find the growth rate data and copy to a df
-    multiplier_df = sg.show_growth_rates(original_data, mult_columns)
+    multiplier_df = sg.extract_growth_rates_from_summary_df(original_data, mult_columns)
 
     # create a column in the df that lets us calculate the multiplier between the 1st and 2nd column's growth rates
     # i.e. multiplier = 2nd column's growth rate divided by 1st column's growth rate

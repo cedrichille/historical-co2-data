@@ -3,6 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import requests
 from download_data import co2_data
+import utils as u
 
 
 def find_earliest_data(original_data, column_name):
@@ -92,7 +93,7 @@ def column_summary(original_data, column_name):
     return summary_df
 
 
-def add_growth_column(summary_dataframe, column_name):
+def add_growth_column_to_summary_df(summary_dataframe, column_name):
     """
     Takes the summary table for a column and returns a dataframe with an added column calculating growth rate
 
@@ -136,7 +137,7 @@ def create_combined_summary(original_data, column_names):
         summary_col_dataframe = column_summary(original_data, col)
 
         # add a growth % column
-        df_dict['summary_' + col] = add_growth_column(summary_col_dataframe, col)
+        df_dict['summary_' + col] = add_growth_column_to_summary_df(summary_col_dataframe, col)
 
     # concatenate the dataframes included in the dictionary
     combined_summary = pd.concat(df_dict, join='outer', axis=1)
@@ -146,7 +147,7 @@ def create_combined_summary(original_data, column_names):
     return combined_summary
 
 
-def show_growth_rates(original_data, column_names):
+def extract_growth_rates_from_summary_df(original_data, column_names):
     """
     Takes the full co2 data and a selection of columns, and returns only the growth rates for each column and country
 

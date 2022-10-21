@@ -18,5 +18,3 @@ download = requests.get(url).content
 # save the contents of the csv to a pd DataFrame
 
 co2_data = pd.DataFrame(pd.read_csv(io.StringIO(download.decode('utf-8'))))
-
-
