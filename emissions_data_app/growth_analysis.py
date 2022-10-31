@@ -89,6 +89,7 @@ def grouped_growth_rate_multipliers(original_data, mult_columns, number_of_group
     grouped_df['Growth Rate Group'] = pd.qcut(grouped_df[grouping_column_name], q=number_of_groups,
                                               labels=range(1, number_of_groups + 1))
 
+    grouped_df.to_excel(r"C:\Users\chille\Python\historical-co2-data\grouped_df_no_zeros.xlsx")
     return grouped_df
 
 
@@ -145,4 +146,3 @@ def grouped_mean_multiplier_bar_chart(original_data, mult_columns, number_of_gro
     plt.ylabel('Mean Multiplier between ' + str(mult_columns[0]) + ' Growth Rate and '
                + str(mult_columns[1]) + ' Growth Rate')
     plt.show()
-

@@ -49,8 +49,8 @@ def find_pct_change_between_years(original_data, column_name, year_1, year_2):
     :param year_2: the end year for percent change calculation
     :return: df with percent change between year_1 and year_2 for all countries
     """
-    # remove nulls from the selected column in the original data set and assign to a new df
-    data_without_nan = original_data[~original_data[column_name].isnull()]
+    # remove nulls and zeros from the selected column in the original data set and assign to a new df
+    data_without_nan = original_data[~(original_data[column_name].isnull() | (original_data[column_name] == 0))]
 
     # create list of unique countries
     country_list = data_without_nan['country'].unique()
@@ -87,3 +87,4 @@ def add_yoy_pct_change(original_data):
         data_with_pct_change.insert(col_index + 1, str(col) + ' YoY_pct_change', data_with_pct_change[col].pct_change())
 
     return data_with_pct_change
+
