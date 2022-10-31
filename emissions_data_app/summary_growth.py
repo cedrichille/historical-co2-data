@@ -3,13 +3,15 @@ import numpy as np
 from matplotlib import pyplot as plt
 import requests
 from download_data import co2_data
+import utils as u
 
 
 def find_earliest_data(original_data, column_name):
     """
-    Takes the full data set and a column, returns the earliest available data and corresponding year for each country
+    Takes the full data set and a column, returns the earliest available non-zer0 data and corresponding year
+    for each country
 
-    The function begins by removing nulls from the column, so only rows with available data are shown.
+    The function removes nulls and zeros from the column, so only rows with available non-zera data are shown.
     Then, the index of the earliest data point is found by identifying the index of the minimum year of available data.
     Finally, the earliest data point itself is found.
 
@@ -18,9 +20,9 @@ def find_earliest_data(original_data, column_name):
     :param column_name: the name of the column in the co2 data set for which you want the earliest available data
     :return: dataframe with the earliest data and corresponding year for each country in the data set
     """
-    # remove nulls from the selected column in the original data set and assign to a new df
+    # remove nulls and zeros from the selected column in the original data set and assign to a new df
 
-    drop_nan = original_data[~original_data[column_name].isnull()]
+    drop_nan = original_data[~(original_data[column_name].isnull() | (original_data[column_name] == 0))]
 
     #  find the index of the minimum year for each country and assign to df
 
@@ -39,11 +41,15 @@ def find_earliest_data(original_data, column_name):
 
 def find_latest_data(original_data, column_name):
     """
-    Takes the full data set and a column, returns the latest available data and corresponding year for each country
+    Takes the full data set and a column, returns the latest available non-zero data and corresponding year
+    for each country
 
-    The function begins by removing nulls from the column, so only rows with available data are shown.
+    The function removes nulls and zeros from the column, so only rows with available non-zero data are shown.
     Then, the index of the latest data point is found by identifying the index of the maximum year of available data.
     Finally, the latest data point itself is found.
+
+    Note that, since zero values are removed, the function will define the latest available data point as the first
+    preceding non-zero value in the case where a country's actual latest available data is zero.
 
     The function returns a dataframe with the latest data point and corresponding year for each country.
     :param original_data: pass the original, unaltered owid co2 data dataframe that was downloaded from the owid GitHub
@@ -51,8 +57,7 @@ def find_latest_data(original_data, column_name):
     :return: dataframe with the latest data and corresponding year for each country in the data set
     """
     # remove nulls from the selected column in the original data set and assign to a new df
-
-    drop_nan = original_data[~original_data[column_name].isnull()]
+    drop_nan = original_data[~(original_data[column_name].isnull() | (original_data[column_name] == 0))]
 
     #  find the index of the minimum year for each country and assign to df
 
@@ -71,6 +76,7 @@ def find_latest_data(original_data, column_name):
 
 def column_summary(original_data, column_name):
     """
+    Takes the full data set and a column, returns a df summarizing data and its availability for all countries
 
     :param original_data: pass the original, unaltered owid co2 data dataframe that was downloaded from the owid GitHub
     :param column_name: the name of the column in the co2 data set for which you want the summary
@@ -91,7 +97,7 @@ def column_summary(original_data, column_name):
     return summary_df
 
 
-def add_growth_column(summary_dataframe, column_name):
+def add_growth_column_to_summary_df(summary_dataframe, column_name):
     """
     Takes the summary table for a column and returns a dataframe with an added column calculating growth rate
 
@@ -119,7 +125,7 @@ def add_growth_column(summary_dataframe, column_name):
 
 def create_combined_summary(original_data, column_names):
     """
-    Takes the full co2 data set and a set of columns, returns a table summarizing those columns for each country
+    Takes the full data set and a set of columns, returns a df summarizing data for each country, including growth rates
 
     :param original_data: pass the original, unaltered owid co2 data dataframe that was downloaded from the owid GitHub
     :param column_names: the names of the columns in the co2 data set which you want to include in the summary table
@@ -135,7 +141,7 @@ def create_combined_summary(original_data, column_names):
         summary_col_dataframe = column_summary(original_data, col)
 
         # add a growth % column
-        df_dict['summary_' + col] = add_growth_column(summary_col_dataframe, col)
+        df_dict['summary_' + col] = add_growth_column_to_summary_df(summary_col_dataframe, col)
 
     # concatenate the dataframes included in the dictionary
     combined_summary = pd.concat(df_dict, join='outer', axis=1)
@@ -145,7 +151,7 @@ def create_combined_summary(original_data, column_names):
     return combined_summary
 
 
-def show_growth_rates(original_data, column_names):
+def extract_growth_rates_from_summary_df(original_data, column_names):
     """
     Takes the full co2 data and a selection of columns, and returns only the growth rates for each column and country
 
@@ -169,8 +175,3 @@ def show_growth_rates(original_data, column_names):
     growth_columns = create_combined_summary(original_data, column_names)[col_growth_names]
 
     return growth_columns
-
-
-# testing functions
-# print(create_combined_summary(co2_data, ['population', 'gdp', 'co2']).loc['Montenegro'])
-# print(show_growth_rates(co2_data, ['population', 'gdp', 'co2']))
