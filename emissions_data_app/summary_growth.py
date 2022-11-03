@@ -48,8 +48,8 @@ def find_latest_data(original_data, column_name):
     Then, the index of the latest data point is found by identifying the index of the maximum year of available data.
     Finally, the latest data point itself is found.
 
-    Note that, since zero values are removed, the function will define the latest available data point as the first
-    preceding non-zero value in the case where a country's actual latest available data is zero.
+    Note that, since zero values are removed, the function will define the latest available data point as the latest
+    available non-zero value, even in the case where a country's actual latest available data has gone to zero.
 
     The function returns a dataframe with the latest data point and corresponding year for each country.
     :param original_data: pass the original, unaltered owid co2 data dataframe that was downloaded from the owid GitHub
