@@ -18,3 +18,4 @@ download = requests.get(url).content
 # save the contents of the csv to a pd DataFrame
 
 co2_data = pd.DataFrame(pd.read_csv(io.StringIO(download.decode('utf-8'))))
+#co2_data.to_excel(r'C:\Users\chille\Python\historical-co2-data\emissions_data_app\co2_data.xlsx')

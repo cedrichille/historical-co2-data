@@ -8,10 +8,10 @@ import utils as u
 
 def find_earliest_data(original_data, column_name):
     """
-    Takes the full data set and a column, returns the earliest available non-zer0 data and corresponding year
+    Takes the full data set and a column, returns the earliest available non-zero data and corresponding year
     for each country
 
-    The function removes nulls and zeros from the column, so only rows with available non-zera data are shown.
+    The function removes nulls and zeros from the column, so only rows with available non-zero data are shown.
     Then, the index of the earliest data point is found by identifying the index of the minimum year of available data.
     Finally, the earliest data point itself is found.
 
@@ -123,7 +123,7 @@ def add_growth_column_to_summary_df(summary_dataframe, column_name):
     return summary_df_with_growth
 
 
-def create_combined_summary(original_data, column_names):
+def create_combined_summary(original_data, column_names=None):
     """
     Takes the full data set and a set of columns, returns a df summarizing data for each country, including growth rates
 
@@ -135,8 +135,15 @@ def create_combined_summary(original_data, column_names):
     # create a dictionary that will contain the names of the summary dataframes for each column
     df_dict = {}
 
-    # iterate through the passed columns to create summary dataframes for each and add each to the dictionary
-    for col in column_names:
+    # if columns are passed, they should be stored in the columns_to_be_summarized variable
+    if column_names is not None:
+        columns_to_be_summarized = column_names
+    # if no column names are passed, all columns from the original data should be stored in the variable
+    else:
+        columns_to_be_summarized = original_data.columns[~original_data.columns.isin(['country', 'year', 'iso_code'])]
+
+    # iterate through the column names in the variable to create summary dataframes for each and add to the dictionary
+    for col in columns_to_be_summarized:
         # create a summary dataframe for the columns
         summary_col_dataframe = column_summary(original_data, col)
 
@@ -151,7 +158,7 @@ def create_combined_summary(original_data, column_names):
     return combined_summary
 
 
-def extract_growth_rates_from_summary_df(original_data, column_names):
+def extract_growth_rates_from_summary_df(original_data, column_names=None):
     """
     Takes the full co2 data and a selection of columns, and returns only the growth rates for each column and country
 
@@ -167,8 +174,15 @@ def extract_growth_rates_from_summary_df(original_data, column_names):
     # the create_combined_summary function
     col_growth_names = []
 
-    # iterate through the passed column names to add the required growth % column names to the list
-    for col in column_names:
+    # if columns are passed, add them a variable
+    if column_names is not None:
+        columns_to_be_extracted = column_names
+    # if no columns are passed, add all columns from original data to variable
+    else:
+        columns_to_be_extracted = original_data.columns[~original_data.columns.isin(['country', 'year', 'iso_code'])]
+
+    # iterate through the variable containing column names to add the required growth % column names to the list
+    for col in columns_to_be_extracted:
         col_growth_names.append(str(col + ' % growth'))
 
     # run the function to create the combined_summary dataframe, and then extract the growth % columns
