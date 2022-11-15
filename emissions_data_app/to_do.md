@@ -6,12 +6,11 @@
 ## summary_growth.py
 
 ## growth_analysis.py
-- MT: improve graphics output through better legends and adding lines of best fit
+- ST: improve graphics output through better legends and adding lines of best fit
 
 ## utils.py
-
+- ST: boxplot function
 
 ## other
-- MT: Projections for data
-- LT: GUI with column search and selection, visualization, exporting capabilities
-- LT: Host dashboard on webpage 
+- LT: Projections for data
+- MT: Host dashboard on webpage, including GUI with column search and selection, visualization, exporting capabilities

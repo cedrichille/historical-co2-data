@@ -25,6 +25,19 @@ def find_country_year_data(data, column_name, country, year):
     return value
 
 
+def find_all_data_for_year(original_data, year):
+    """
+    Take the original data and a year, and return a df with the each country's data for that year
+    :param original_data:
+    :param year:
+    :return:
+    """
+    # slice df based on year
+    single_year_data = original_data.loc[original_data['year'] == year]
+
+    return single_year_data
+
+
 def pct_change_formula(datapoint_1, datapoint_2):
     """
     Takes two datapoints, calculates the percent change between them
@@ -88,3 +101,59 @@ def add_yoy_pct_change(original_data):
 
     return data_with_pct_change
 
+
+def divide_data_into_groups_for_year(original_data, year, column_to_group, number_of_groups):
+    """
+    Take original data, a year, a column, and number of groups, and return data with a column containing group number
+
+    :param year:
+    :param original_data:
+    :param column_to_group:
+    :param number_of_groups:
+    :return:
+    """
+    # define name of columns containing groups
+    group_column_name = str(column_to_group) + " Group"
+
+    # create a df with all the countries' data for the chosen year
+    grouped_df = find_all_data_for_year(original_data, year)
+
+    # cut into groups and store in a new column
+    grouped_df.insert(3, group_column_name, pd.qcut(grouped_df.loc[:, column_to_group], q=number_of_groups,
+                                                    labels=range(1, number_of_groups + 1)), True)
+
+    return grouped_df
+
+
+def find_summary_statistics_per_group(original_data, year, column_to_group, number_of_groups, column_to_summarize):
+    """
+    Take original data, year, a specified column, and the number of groups for that column. Return descriptive
+    statistics of another chosen column for each group.
+    :param original_data:
+    :param year:
+    :param column_to_group:
+    :param number_of_groups:
+    :param column_to_summarize:
+    :return:
+    """
+    # create df with a column denoting group for chosen column
+    grouped_df = divide_data_into_groups_for_year(original_data, year, column_to_group, number_of_groups)
+
+    # set a variable to store the name of column denoting groups
+    group_column_name = str(column_to_group) + " Group"
+
+    # create dictionary that will contain {group : descriptive stats}
+    descriptive_statistics_dict = {}
+
+    # iterate through each group using number_of_groups and calculate descriptive stats for each group
+    for group in range(1, number_of_groups + 1):
+        group_df = grouped_df[grouped_df[group_column_name] == group]
+        group_statistics = group_df[column_to_summarize].describe()
+        descriptive_statistics_dict[group] = group_statistics
+
+    return descriptive_statistics_dict
+
+
+def group_boxplot(original_data, year, column_to_group, number_of_groups, column_to_plot):
+
+    return
