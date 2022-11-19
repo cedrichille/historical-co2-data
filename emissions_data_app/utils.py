@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 import requests
-from download_data import co2_data
+from download_data import co2_data_regions, co2_data_countries
 
 
 def find_country_year_data(data, column_name, country, year):
@@ -75,7 +75,7 @@ def find_pct_change_between_years(original_data, column_name, year_1, year_2):
         year_2_data = find_country_year_data(data_without_nan, column_name, country, year_2)
 
         pct_change_dict[country] = pct_change_formula(year_1_data, year_2_data)
-    print(pct_change_dict)
+
     pct_change_between_years_dataframe = pd.DataFrame.from_dict(pct_change_dict, orient='index',
                                                                 columns=[(str(column_name) + ' pct_change')])
 
@@ -113,7 +113,7 @@ def divide_data_into_groups_for_year(original_data, year, column_to_group, numbe
     :return:
     """
     # define name of columns containing groups
-    group_column_name = str(column_to_group) + " Group"
+    group_column_name = str(column_to_group) + " group"
 
     # create a df with all the countries' data for the chosen year
     grouped_df = find_all_data_for_year(original_data, year)
@@ -122,7 +122,34 @@ def divide_data_into_groups_for_year(original_data, year, column_to_group, numbe
     grouped_df.insert(3, group_column_name, pd.qcut(grouped_df.loc[:, column_to_group], q=number_of_groups,
                                                     labels=range(1, number_of_groups + 1)), True)
 
-    return grouped_df
+    return grouped_df, group_column_name
+
+
+def group_pct_of_total(original_data, year, column_to_group, number_of_groups, pct_of_total_column):
+    """
+    Takes a year from original data, groups countries by percentiles of a chosen column,
+    and finds the contribution of each group to the total of a (potentially different) chosen column
+    :param pct_of_total_column:
+    :param original_data:
+    :param year:
+    :param column_to_group:
+    :param number_of_groups:
+    :return:
+    """
+    original_data = pd.DataFrame(original_data)
+    # create df with data split into groups
+    grouped_df, group_column_name = divide_data_into_groups_for_year(original_data, year, column_to_group,
+                                                                     number_of_groups)
+
+    # calculate total of all countries in given year
+    total = find_all_data_for_year(original_data, year)[pct_of_total_column].sum()
+
+    # calculate pct of total for each group in a dictionary
+    pct_of_total_dict = {}
+    for group in range(1, number_of_groups + 1):
+        pct_of_total_dict[group] = grouped_df[grouped_df[group_column_name] == group][pct_of_total_column].sum() / total
+
+    return pct_of_total_dict
 
 
 def find_summary_statistics_per_group(original_data, year, column_to_group, number_of_groups, column_to_summarize):
@@ -137,10 +164,11 @@ def find_summary_statistics_per_group(original_data, year, column_to_group, numb
     :return:
     """
     # create df with a column denoting group for chosen column
-    grouped_df = divide_data_into_groups_for_year(original_data, year, column_to_group, number_of_groups)
+    grouped_df, group_column_name = divide_data_into_groups_for_year(original_data, year, column_to_group,
+                                                                     number_of_groups)
 
     # set a variable to store the name of column denoting groups
-    group_column_name = str(column_to_group) + " Group"
+    # group_column_name = str(column_to_group) + " Group"
 
     # create dictionary that will contain {group : descriptive stats}
     descriptive_statistics_dict = {}
@@ -153,7 +181,3 @@ def find_summary_statistics_per_group(original_data, year, column_to_group, numb
 
     return descriptive_statistics_dict
 
-
-def group_boxplot(original_data, year, column_to_group, number_of_groups, column_to_plot):
-
-    return

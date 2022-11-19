@@ -19,3 +19,6 @@ download = requests.get(url).content
 
 co2_data = pd.DataFrame(pd.read_csv(io.StringIO(download.decode('utf-8'))))
 #co2_data.to_excel(r'C:\Users\chille\Python\historical-co2-data\emissions_data_app\co2_data.xlsx')
+co2_data_countries = co2_data[~co2_data['iso_code'].isnull()]
+co2_data_regions = co2_data[co2_data['iso_code'].isnull()]
+

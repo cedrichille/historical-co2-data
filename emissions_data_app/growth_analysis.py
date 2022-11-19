@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 import requests
-from download_data import co2_data
+from download_data import co2_data_regions, co2_data_countries
 import summary_growth as sg
 import utils as u
 
@@ -154,69 +154,5 @@ def find_grouped_multiplier_statistics(original_data, mult_columns, number_of_gr
     return multiplier_statistics_dict
 
 
-def grouped_mean_multiplier_bar_chart(original_data, mult_columns, number_of_groups):
-    """
-    Takes the full data set, chosen columns, and desired number of groups of growth rates, and returns a bar chart
-    visualizing the mean multiplier of column growth rates for each group
 
-    :param original_data: pass the original, unaltered owid co2 data dataframe that was downloaded from the owid GitHub
-    :param mult_columns: the names of the columns for which you want to calculate the mean growth rate multiplier
-    :param number_of_groups: the number of groups you want to split the data into. The set will be divided into chosen
-     number of groups using the number_of_groups - 1 quantiles of the growth rates of the first passed column
-    :return: bar chart of the mean multiplier for each equal group of sorted growth rates of first passed column
-    """
-
-    # find the mean multiplier of each group
-    mean_multiplier_dict = find_grouped_mean_multiplier(original_data, mult_columns, number_of_groups)
-
-    # plot the dictionary items
-
-    plt.bar(*zip(*mean_multiplier_dict.items()))
-    # plt.title(result_text)
-    plt.xlabel(str(mult_columns[0]) + ' Growth Rate Group')
-    plt.ylabel('Mean Multiplier between ' + str(mult_columns[0]) + ' Growth Rate and '
-               + str(mult_columns[1]) + ' Growth Rate')
-    plt.show()
-
-
-def grouped_multiplier_boxplot(original_data, mult_columns, number_of_groups):
-    """
-
-    :param original_data:
-    :param mult_columns:
-    :param number_of_groups:
-    :return:
-    """
-    # create df with the growth rate multipliers and groups the countries belong to
-    grouped_multiplier_df = grouped_growth_rate_multipliers(original_data, mult_columns, number_of_groups)
-
-    # save column name for multiplier to a variable to match grouped_df output
-    mult_col_name = (str(mult_columns[1]) + ' / ' + str(mult_columns[0]) + ' multiplier')
-
-    # split df into separate dfs for each group
-    # df_group_name_dict = {}
-    # for group in range(1, number_of_groups+1):
-    #    df_group_name_dict[group] = grouped_multiplier_df[grouped_multiplier_df['Growth Rate Group'] == group]
-
-    # create a plot with n= number_of_groups subplots
-    fig, axes = plt.subplots(ncols=number_of_groups, sharey=True)
-    fig.subplots_adjust(wspace=0)
-
-    for ax, group in zip(axes, range(1, number_of_groups+1)):
-        ax.boxplot(grouped_multiplier_df[grouped_multiplier_df['Growth Rate Group'] == group][mult_col_name],
-                   showfliers=True)
-        ax.set(xlabel=group)
-
-
-    # show a box plot that summarizes multipliers for each group
-    # plt.boxplot(x='Growth Rate Groups', y=mult_col_name, data=grouped_multiplier_df)
-    plt.show()
-
-
-# testing
-# print(find_grouped_mean_multiplier(co2_data, ['population', 'co2'], 5))
-grouped_mean_multiplier_bar_chart(co2_data, ['gdp', 'share_global_cumulative_co2'], 5)
-
-print(find_grouped_multiplier_statistics(co2_data, ['population', 'share_global_cumulative_co2'], 5))
-grouped_multiplier_boxplot(co2_data, ['population', 'share_global_cumulative_co2'], 5)
 

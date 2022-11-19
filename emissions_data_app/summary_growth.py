@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 import requests
-from download_data import co2_data
+from download_data import co2_data_regions, co2_data_countries
 import utils as u
 
 
