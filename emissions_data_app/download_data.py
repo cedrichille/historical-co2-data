@@ -22,3 +22,9 @@ co2_data = pd.DataFrame(pd.read_csv(io.StringIO(download.decode('utf-8'))))
 co2_data_countries = co2_data[~co2_data['iso_code'].isnull()]
 co2_data_regions = co2_data[co2_data['iso_code'].isnull()]
 
+# download codebook for dataset definitions
+url_codebook = "https://raw.githubusercontent.com/owid/co2-data/master/owid-co2-codebook.csv"
+download_codebook = requests.get(url_codebook).content
+
+#save codebook to a df
+codebook = pd.DataFrame(pd.read_csv(io.StringIO(download_codebook.decode('utf-8'))))

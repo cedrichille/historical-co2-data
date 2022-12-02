@@ -90,6 +90,7 @@ def add_yoy_pct_change(original_data):
     """
     # save a copy of original_data
     data_with_pct_change = original_data
+    print(data_with_pct_change.select_dtypes(include=['int64', 'float64']))
 
     # iterate through columns to add a YoY % change column for each column of original data that contains ints or floats
     # default NaN fill method (pad) is used to fill forward the time series as if data had continued to accrue

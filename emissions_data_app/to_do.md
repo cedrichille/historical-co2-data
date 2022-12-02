@@ -14,13 +14,16 @@
 - lines of best fit
 
 # dash_app.py
-- Select Columns from df
+- bubble size for second variable + dropdown
+- Second axis for third variable?
+- error handling when no countries and/or no dataset selected (prevent update?)
+- Select all countries
 - order scatter plot by value
 - Line graph trend of subset of countries over years (max 10 countries?)
 - Cumulative emissions (stacked line?)
 - 100% stacked bar for (i) share of total co2 column and (ii) grouped pct_of_total
 - Page dedicated to grouped data
-- Link to codebook for column definitions
+
 
 ## other
 - Host dashboard on webpage, including GUI with column search and selection, visualization, exporting capabilities
