@@ -14,9 +14,7 @@
 - lines of best fit
 
 # dash_app.py
-- bubble size for second variable + dropdown
 - Second axis for third variable?
-- error handling when no countries and/or no dataset selected (prevent update?)
 - Select all countries
 - order scatter plot by value
 - Line graph trend of subset of countries over years (max 10 countries?)
