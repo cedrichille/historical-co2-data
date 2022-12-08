@@ -5,8 +5,8 @@ import plotly.express as px
 from emissions_data_app.download_data import co2_data_countries, codebook
 import emissions_data_app.utils as u
 
-dash.register_page(__name__)
+dash.register_page(__name__, order=4)
 
-layout = html.Div(
-    html.H1("Table Page")
+layout = dbc.Container(
+    html.H1("Explore")
 )

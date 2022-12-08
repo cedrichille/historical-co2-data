@@ -25,6 +25,43 @@ def find_country_year_data(data, column_name, country, year):
     return value
 
 
+def find_country_range_data(data, column_name, countries, year_1, year_2):
+    """
+    Takes a data set, a column, country, and year range, and returns the corresponding values from the data set as df
+
+    :param data:
+    :param column_name:
+    :param countries:
+    :param year_1:
+    :param year_2:
+    :return:
+    """
+    if year_1 > year_2:
+        year_1, year_2 = year_2, year_1
+
+    if isinstance(countries, list):
+        # if country-selector value is a list, there is more than one country selected, then .isin() should be used
+        selected_country_df = data[data['country'].isin(countries)]
+        country_range_df = pd.DataFrame({'year': range(year_1, year_2 + 1)})
+
+        for country in countries:
+            values = selected_country_df[(selected_country_df['country'] == country) & (
+                selected_country_df['year'].isin(range(year_1, year_2 + 1)))][column_name].values
+            country_range_df[country] = values
+            country_range_df.reset_index(drop=True)
+    else:
+        # if it's not a list, only one country is selected, which means we should use boolean comparison to select
+        selected_country_df = data[data['country'] == countries]
+        country_range_df = pd.DataFrame({'year': range(year_1, year_2 + 1)})
+
+        values = list(selected_country_df[(selected_country_df['country'] == countries) & (
+            selected_country_df['year'].isin(range(year_1, year_2 + 1)))][column_name])
+        country_range_df[countries] = values
+        country_range_df.reset_index(drop=True)
+
+    return country_range_df
+
+
 def find_all_data_for_year(original_data, year):
     """
     Take the original data and a year, and return a df with the each country's data for that year
@@ -36,6 +73,24 @@ def find_all_data_for_year(original_data, year):
     single_year_data = original_data.loc[original_data['year'] == year]
 
     return single_year_data
+
+
+def find_all_data_for_year_range(original_data, year_1, year_2):
+    """
+    Take the original data and a year range, and return a df with each country's data for that range.
+
+    :param original_data:
+    :param year_1:
+    :param year_2:
+    :return:
+    """
+    if year_1 <= year_2:
+        # slice df based on year
+        year_range_data = original_data.loc[(original_data['year'] >= year_1) & (original_data['year'] <= year_2)]
+    else:
+        year_range_data = original_data.loc[(original_data['year'] <= year_1) & (original_data['year'] >= year_2)]
+
+    return year_range_data
 
 
 def pct_change_formula(datapoint_1, datapoint_2):

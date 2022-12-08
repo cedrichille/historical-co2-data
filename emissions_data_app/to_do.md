@@ -14,8 +14,9 @@
 - lines of best fit
 
 # dash_app.py
-- Second axis for third variable?
+- year sliders adjusts to available ranges
 - Select all countries
+- Allow for addition of YoY growth rates to columns
 - order scatter plot by value
 - Line graph trend of subset of countries over years (max 10 countries?)
 - Cumulative emissions (stacked line?)

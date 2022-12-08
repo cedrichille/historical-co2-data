@@ -5,80 +5,59 @@ import dash_bootstrap_templates as dbt
 
 
 # Palette:
-# 002B36 - dark blue
-# A4C9D7 - light blue
-# D07C2E - orange
-# F1F1E6 - gray
+# #002B36 - dark blue
+# #A4C9D7 - light blue
+# #D07C2E - orange
+# #F1F1E6 - gray
 
 app = Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.SOLAR])
 
 dbt.load_figure_template('SOLAR')
 
-nav_style = \
-    {
-    "position": "fixed",
-    "top": 0,
-    "left": 0,
-    "bottom": 0,
-    "width": "24rem",
-    "padding": "2rem 1rem",
-    "background-color": "#002b36",
-    "color": "#D07C2E"
-}
+navbar_image = "https://images.plot.ly/logo/new-branding/plotly-logomark.png"
 
-page_nav = html.Div([
-    html.H2("Navigation"),
-    html.Hr(),
-    html.Div([
-            html.Div(
-                dcc.Link(
-                    f"""{page['name']} \n""", href=page["relative_path"]
+navbar = dbc.Navbar(
+    dbc.Container(
+        [
+            html.A(
+                dbc.Row(
+                    [
+                        dbc.Col(html.Img(src=navbar_image, height="30px")),
+                        dbc.Col(dbc.NavbarBrand("Explore the History of Greenhouse Gas Emissions", class_name="ms-2")),
+                    ],
+                    align="center",
+                    class_name="g-0"
                 ),
-
+                href=dash.page_registry['pages.analyze']['path'],
+                style={'textDecoration': 'none'}
+            ),
+            dbc.Nav(
+                [
+                    dbc.NavItem(dbc.NavLink(f"{page['name']} ", href=page["relative_path"]))
+                    for page in dash.page_registry.values()
+                ],
+                pills=False,
+                navbar=True
             )
-            for page in dash.page_registry.values()
-        ]),
-    ],
-    style=nav_style
+        ]
+    ),
+    dark=True,
+    color="#D07C2E"
 )
 
+
 # create layout that allows for multiple pages taken from files in pages directory
-app.layout = html.Div([
-    # Title
+app.layout = dbc.Container([
     dbc.Row([
-        dbc.Col(),
-        dbc.Col(
-            html.H1(style={'textAlign': 'center', 'margin-left': '7px', 'margin-top': '7px'},
-                    children='Explore the History of Greenhouse Gas Emissions'),
-            width=9,
-            style={'margin-left': '7px', 'margin-top': '7px'})
-    ]),
-
-    # Sidebar and subtitle
+        dbc.Col(navbar, width=12)
+        ]),
     dbc.Row([
-        dbc.Col(page_nav),
-        dbc.Col(
-            html.Div(
-                style={'textAlign': 'center'},
-                children=
-                '''
-                Dashboard to explore the greenhouse gas emissions of countries through history. 
-                Based on Our World in Data (OWID) data from the owid/co2-data GitHub repository. 
-                '''),
-            width=9,
-            style={'margin-left': '7px', 'margin-top': '7px'}
-        )
-    ]),
-
-    # home page content
-    dbc.Row([
-        dbc.Col(),
         dbc.Col(dash.page_container,
-                width=9,
-                style={'margin-left': '7px', 'margin-top': '7px'}
+                width=12
                 )
+        ])
     ])
-])
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
