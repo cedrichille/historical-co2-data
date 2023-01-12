@@ -8,5 +8,7 @@ import emissions_data_app.utils as u
 dash.register_page(__name__, order=3)
 
 layout = dbc.Container(
-    html.H1("Aggregate")
+    html.H1("Aggregate", id='aggregate-title')
 )
+
+

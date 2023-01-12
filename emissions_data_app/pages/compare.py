@@ -125,7 +125,7 @@ layout = dbc.Container(
     Input('compare-year-slider', 'value'),
     Input('compare-country-selector', 'value'),
     Input('compare-dataset-selector', 'value'))
-def update_scatter_plot(year_range, country_value, dataset_value):
+def update_timeseries_plot(year_range, country_value, dataset_value):
     # check if more than one country has been passed
     if isinstance(country_value, list):
         # if country-selector value is a list, there is more than one country selected, then .isin() should be used
@@ -134,19 +134,18 @@ def update_scatter_plot(year_range, country_value, dataset_value):
         # if it's not a list, only one country is selected, which means we should use boolean comparison to select
         selected_country_df = co2_data_countries[co2_data_countries['country'] == country_value]
 
-    # use the utils function to find the dataset for only the selected countries and years
-    df = u.find_country_range_data(selected_country_df, dataset_value, country_value, year_range[0], year_range[1])
-
     # check if no countries provided, return an error and don't update dashboard
     if not country_value:
         return dash.no_update, html.P(f'Please select one or more countries.', style={
-            'font-weight': 'bold', 'font-style': 'italics', 'color': '#D07C2E'}), dash.no_update, dash.no_update, \
-               dash.no_update
+            'font-weight': 'bold', 'font-style': 'italics', 'color': '#D07C2E'}), dash.no_update, dash.no_update
 
     # check if no dataset selected, return an error and don't update dashboard
     if not dataset_value:
         return dash.no_update, dash.no_update, html.P(f'Please select a dataset.', style={
-            'font-weight': 'bold', 'font-style': 'italics', 'color': '#D07C2E'}), dash.no_update, dash.no_update
+            'font-weight': 'bold', 'font-style': 'italics', 'color': '#D07C2E'}), dash.no_update
+
+    # use the utils function to find the dataset for only the selected countries and years
+    df = u.find_country_range_data(selected_country_df, dataset_value, country_value, year_range[0], year_range[1])
 
     # define the parameters of the scatter plot and update the data
     fig = px.line(df, x='year', y=df.columns)

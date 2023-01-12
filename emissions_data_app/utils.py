@@ -61,7 +61,6 @@ def find_country_range_data(data, column_name, countries, year_1, year_2):
 
     return country_range_df
 
-
 def find_all_data_for_year(original_data, year):
     """
     Take the original data and a year, and return a df with the each country's data for that year

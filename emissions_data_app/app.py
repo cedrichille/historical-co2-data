@@ -1,7 +1,10 @@
 import dash
-from dash import Dash, html, dcc
+from dash import Dash, html, dcc, callback, Input, Output
 import dash_bootstrap_components as dbc
 import dash_bootstrap_templates as dbt
+import plotly.express as px
+from emissions_data_app.download_data import co2_data_countries, codebook
+import emissions_data_app.utils as u
 
 
 # Palette:
@@ -11,7 +14,6 @@ import dash_bootstrap_templates as dbt
 # #F1F1E6 - gray
 
 app = Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.SOLAR])
-
 dbt.load_figure_template('SOLAR')
 
 navbar_image = "https://images.plot.ly/logo/new-branding/plotly-logomark.png"
@@ -47,7 +49,8 @@ navbar = dbc.Navbar(
 
 
 # create layout that allows for multiple pages taken from files in pages directory
-app.layout = dbc.Container([
+app.layout = html.Div([
+    dbc.Container([
     dbc.Row([
         dbc.Col(navbar, width=12)
         ]),
@@ -57,7 +60,7 @@ app.layout = dbc.Container([
                 )
         ])
     ])
-
+    ])
 
 if __name__ == '__main__':
     app.run_server(debug=True)

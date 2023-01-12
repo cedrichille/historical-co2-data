@@ -116,7 +116,9 @@ layout = dbc.Container(
                                    if year % 10 == 0},
                             id='year-slider'
                         ),
-                        html.A(id='dataset-explainer')
+                        html.A(id='dataset-explainer'),
+                        html.Hr(),
+                        html.A(id='bubble-dataset-explainer')
                     ],
                     width=9
                     )
@@ -135,6 +137,7 @@ layout = dbc.Container(
     Output('dataset-error-display', 'children'),
     Output('bubble-size-error-display', 'children'),
     Output('dataset-explainer', 'children'),
+    Output('bubble-dataset-explainer', 'children'),
     Input('year-slider', 'value'),
     Input('country-selector', 'value'),
     Input('dataset-selector', 'value'),
@@ -154,26 +157,26 @@ def update_scatter_plot(selected_year, country_value, dataset_value, bubble_size
     # check if no countries provided, return an error and don't update dashboard
     if not country_value:
         return dash.no_update, html.P(f'Please select one or more countries.', style={
-            'font-weight': 'bold', 'font-style': 'italics', 'color': '#D07C2E'}), dash.no_update, dash.no_update, dash.no_update
+            'font-weight': 'bold', 'font-style': 'italics', 'color': '#D07C2E'}), dash.no_update, dash.no_update, dash.no_update, dash.no_update
 
     # check if no dataset selected, return an error and don't update dashboard
     if not dataset_value:
         return dash.no_update, dash.no_update, html.P(f'Please select a dataset.', style={
-            'font-weight': 'bold', 'font-style': 'italics', 'color': '#D07C2E'}), dash.no_update, dash.no_update
+            'font-weight': 'bold', 'font-style': 'italics', 'color': '#D07C2E'}), dash.no_update, dash.no_update, dash.no_update
 
     # check if any data in bubble_size set is NaN, and return an error and don't update dashboard
     if bubble_size_value and df[bubble_size_value].isnull().values.any():
         return dash.no_update, dash.no_update, dash.no_update, \
                html.P(f'At least one {bubble_size_value} value is unavailable for this year, '
                       f'please select another Bubble size dataset or year.', style=
-                      {'font-weight': 'bold', 'font-style': 'italics', 'color': '#D07C2E'}), dash.no_update
+                      {'font-weight': 'bold', 'font-style': 'italics', 'color': '#D07C2E'}), dash.no_update, dash.no_update
 
     # check if any data in bubble_size set is negative, and return an error and don't update dashboard
     if bubble_size_value and df[bubble_size_value].isnull().values.any():
         return dash.no_update, dash.no_update, dash.no_update, \
                html.P(f'At least one {bubble_size_value} value is unavailable for this year, '
                       f'please select another Bubble size dataset or year.', style=
-                      {'font-weight': 'bold', 'font-style': 'italics'}), dash.no_update
+                      {'font-weight': 'bold', 'font-style': 'italics'}), dash.no_update, dash.no_update
 
     # define the parameters of the scatter plot and update the data
     fig = px.scatter(df, x='country', y=dataset_value, size=bubble_size_value, size_max=70,
@@ -184,4 +187,13 @@ def update_scatter_plot(selected_year, country_value, dataset_value, bubble_size
     dataset_codebook_description = codebook.loc[codebook['column'] == dataset_value]['description'].values[0]
     dataset_def = f"* {dataset_value}: {dataset_codebook_description}"
 
-    return fig, None, None, None, dataset_def
+    # access codebook for full description of selected bubble size dataset, if selected
+    if bubble_size_value:
+        bubble_size_codebook_description = codebook.loc[codebook['column'] ==
+                                                        bubble_size_value]['description'].values[0]
+        bubble_size_def = f"** {bubble_size_value}: {bubble_size_codebook_description}"
+        return fig, None, None, None, dataset_def, bubble_size_def
+
+    return fig, None, None, None, dataset_def, None
+
+
