@@ -61,6 +61,7 @@ def find_country_range_data(data, column_name, countries, year_1, year_2):
 
     return country_range_df
 
+
 def find_all_data_for_year(original_data, year):
     """
     Take the original data and a year, and return a df with the each country's data for that year
@@ -176,6 +177,39 @@ def divide_data_into_groups_for_year(original_data, year, column_to_group, numbe
     # cut into groups and store in a new column
     grouped_df.insert(3, group_column_name, pd.qcut(grouped_df.loc[:, column_to_group], q=number_of_groups,
                                                     labels=range(1, number_of_groups + 1)), True)
+
+    return grouped_df, group_column_name
+
+
+def divide_data_into_groups_for_year_range(original_data, year_1, year_2, column_to_group, number_of_groups):
+    """
+    Take original data, two years, a column, and number of groups, and return data with a column containing group number
+
+    :param year_1:'
+    :param year_2:'
+    :param original_data:
+    :param column_to_group:
+    :param number_of_groups:
+    :return:
+    """
+    # define name of columns containing groups
+    group_column_name = f"{column_to_group} group"
+
+    # create a df with all the countries' data for the chosen year
+    grouped_df = find_all_data_for_year_range(original_data, year_1, year_2)
+    grouped_df = pd.DataFrame(grouped_df.groupby('country').sum(numeric_only=True))
+    grouped_df['year_range'] = f"{year_1} - {year_2}"
+
+    # cut into groups and store in a new column
+    n_labels = number_of_groups + 1
+    while n_labels > 0:
+        try:
+            grouped_df.insert(3, group_column_name, pd.qcut(grouped_df.loc[:, column_to_group], q=number_of_groups,
+                                                            labels=range(1, n_labels),
+                                                            duplicates='drop'), True)
+            break
+        except ValueError:
+            n_labels -= 1
 
     return grouped_df, group_column_name
 

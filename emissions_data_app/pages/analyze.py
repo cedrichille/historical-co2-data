@@ -1,3 +1,5 @@
+import random
+
 import dash
 from dash import html, dcc, Input, Output, callback
 import dash_bootstrap_components as dbc
@@ -143,8 +145,10 @@ layout = dbc.Container(
     Input('dataset-selector', 'value'),
     Input('bubble-size-selector', 'value'))
 def update_scatter_plot(selected_year, country_value, dataset_value, bubble_size_value):
+    if not country_value:
+        selected_country_df = co2_data_countries
     # check if more than one country has been passed
-    if isinstance(country_value, list):
+    elif isinstance(country_value, list):
         # if country-selector value is a list, there is more than one country selected, then .isin() should be used
         selected_country_df = co2_data_countries[co2_data_countries['country'].isin(country_value)]
     else:
@@ -154,29 +158,16 @@ def update_scatter_plot(selected_year, country_value, dataset_value, bubble_size
     # use the utils function to find the dataset for only the selected countries and years
     df = u.find_all_data_for_year(selected_country_df, selected_year)
 
-    # check if no countries provided, return an error and don't update dashboard
-    if not country_value:
-        return dash.no_update, html.P(f'Please select one or more countries.', style={
-            'font-weight': 'bold', 'font-style': 'italics', 'color': '#D07C2E'}), dash.no_update, dash.no_update, dash.no_update, dash.no_update
-
     # check if no dataset selected, return an error and don't update dashboard
     if not dataset_value:
         return dash.no_update, dash.no_update, html.P(f'Please select a dataset.', style={
             'font-weight': 'bold', 'font-style': 'italics', 'color': '#D07C2E'}), dash.no_update, dash.no_update, dash.no_update
 
     # check if any data in bubble_size set is NaN, and return an error and don't update dashboard
-    if bubble_size_value and df[bubble_size_value].isnull().values.any():
-        return dash.no_update, dash.no_update, dash.no_update, \
-               html.P(f'At least one {bubble_size_value} value is unavailable for this year, '
-                      f'please select another Bubble size dataset or year.', style=
-                      {'font-weight': 'bold', 'font-style': 'italics', 'color': '#D07C2E'}), dash.no_update, dash.no_update
-
-    # check if any data in bubble_size set is negative, and return an error and don't update dashboard
-    if bubble_size_value and df[bubble_size_value].isnull().values.any():
-        return dash.no_update, dash.no_update, dash.no_update, \
-               html.P(f'At least one {bubble_size_value} value is unavailable for this year, '
-                      f'please select another Bubble size dataset or year.', style=
-                      {'font-weight': 'bold', 'font-style': 'italics'}), dash.no_update, dash.no_update
+    if bubble_size_value and (df[bubble_size_value].isnull().values.any() or (df[bubble_size_value] < 0).any()):
+        df = df.copy()
+        df[bubble_size_value].fillna(0, inplace=True)
+        df[bubble_size_value] = df[bubble_size_value].apply(lambda x: 0 if x < 0 else x)
 
     # define the parameters of the scatter plot and update the data
     fig = px.scatter(df, x='country', y=dataset_value, size=bubble_size_value, size_max=70,

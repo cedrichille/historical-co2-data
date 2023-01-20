@@ -20,18 +20,17 @@ def group_boxplot(original_data, year, column_to_group, number_of_groups, column
     :return:
     """
     # create df with a column denoting group for chosen column
-    grouped_df = u.divide_data_into_groups_for_year(original_data, year, column_to_group, number_of_groups)
-
-    # set a variable to store the name of column denoting groups
-    group_column_name = str(column_to_group) + " Group"
+    grouped_df, group_column_name = u.divide_data_into_groups_for_year(original_data, year, column_to_group,
+                                                                       number_of_groups)
 
     # create a plot with n= number_of_groups subplots
     fig, axes = plt.subplots(ncols=number_of_groups, sharey=True)
     fig.subplots_adjust(wspace=0)
 
     for ax, group in zip(axes, range(1, number_of_groups + 1)):
+        print(group, grouped_df[grouped_df[group_column_name] == group][column_to_plot])
         ax.boxplot(grouped_df[grouped_df[group_column_name] == group][column_to_plot],
-                   showfliers=True)
+                   showfliers=False)
         ax.set(xlabel=group)
 
     plt.show()
@@ -87,6 +86,7 @@ def plot_pct_of_total(original_data, year, column_to_group, number_of_groups, pc
     plt.ylabel("% of total " + str(pct_of_total_column))
     plt.xticks(range(1, number_of_groups + 1))
     plt.show()
+
 
 
 # ------------- MULTIPLIER-SPECIFIC PLOTS ----------------

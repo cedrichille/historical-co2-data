@@ -147,7 +147,7 @@ def update_timeseries_plot(year_range, country_value, dataset_value):
     # use the utils function to find the dataset for only the selected countries and years
     df = u.find_country_range_data(selected_country_df, dataset_value, country_value, year_range[0], year_range[1])
 
-    # define the parameters of the scatter plot and update the data
+    # define the parameters of the line plot and update the data
     fig = px.line(df, x='year', y=df.columns)
     fig.update_xaxes(
         title_text='Year',
