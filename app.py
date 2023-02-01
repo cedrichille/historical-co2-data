@@ -3,8 +3,8 @@ from dash import Dash, html, dcc, callback, Input, Output
 import dash_bootstrap_components as dbc
 import dash_bootstrap_templates as dbt
 import plotly.express as px
-from emissions_data_app.download_data import co2_data_countries, codebook
-import emissions_data_app.utils as u
+from download_data import co2_data_countries, codebook
+import utils as u
 
 
 # Palette:

@@ -2,8 +2,8 @@ import dash
 from dash import html, dcc, Input, Output, callback, dash_table
 import dash_bootstrap_components as dbc
 import plotly.express as px
-from emissions_data_app.download_data import co2_data_countries, codebook
-import emissions_data_app.utils as u
+from download_data import co2_data_countries, codebook
+import utils as u
 
 dash.register_page(__name__, order=4)
 

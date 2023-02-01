@@ -4,8 +4,8 @@ from dash import html, dcc, Input, Output, callback, ctx, State
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 import plotly.express as px
-from emissions_data_app.download_data import co2_data_countries, codebook
-import emissions_data_app.utils as u
+from download_data import co2_data_countries, codebook
+import utils as u
 
 # Purpose:
 # (i) contributions of individual countries to total emissions in a year or range of years as 100% stacked bar chart
