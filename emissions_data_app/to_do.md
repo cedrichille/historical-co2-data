@@ -13,9 +13,8 @@
 
 ## app.py + pages
 - year sliders adjusts to available ranges
-- Select all countries in analyze and compare (by deselecting all)
-- Allow for addition of YoY growth rates to columns (explore)
 - callback that stores and copies selections to other pages (should live in app.py, but how can it access the components in other pages?)
 
 ## other
 - Host dashboard on webpage, including GUI with column search and selection, visualization, exporting capabilities
+- Update README and LICENSE 

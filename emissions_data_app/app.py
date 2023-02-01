@@ -14,6 +14,7 @@ import emissions_data_app.utils as u
 # #F1F1E6 - gray
 
 app = Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.SOLAR])
+server = app.server
 dbt.load_figure_template('SOLAR')
 
 navbar_image = "https://images.plot.ly/logo/new-branding/plotly-logomark.png"
