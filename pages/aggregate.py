@@ -327,13 +327,15 @@ def update_agg_plot(agg_generate, year_range, country_value, dataset_value, grou
                 fig = px.box(df, x=grouped_column_name, y=dataset_value, color=grouped_column_name, notched=False)
                 fig.update_xaxes(
                     title_text=grouped_column_name,
-                    title_standoff=25
+                    title_standoff=25,
+                    showgrid=True, gridcolor='#1e434a', tickfont=dict(color='#839496'), title_font=dict(color='#839496')
                 )
                 fig.update_yaxes(
                     title_text=f"{dataset_value} *",
-                    title_standoff=25
+                    title_standoff=25,
+                    showgrid=True, gridcolor='#1e434a', tickfont=dict(color='#839496'), title_font=dict(color='#839496')
                 )
-                fig.update_layout(transition_duration=100, showlegend=False)
+                fig.update_layout(transition_duration=100, showlegend=False, plot_bgcolor= "#002b36", paper_bgcolor="#1e434a")
 
             except KeyError:
                 raise PreventUpdate
