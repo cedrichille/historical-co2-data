@@ -173,8 +173,8 @@ def update_scatter_plot(selected_year, country_value, dataset_value, bubble_size
     fig = px.scatter(df, x='country', y=dataset_value, size=bubble_size_value, size_max=70,
                      labels={'country': 'Country', dataset_value: f"{dataset_value} *"})
     fig.update_layout(transition_duration=100, plot_bgcolor= "#002b36", paper_bgcolor="#1e434a")
-    fig.update_xaxes(showgrid=True, gridcolor='#1e434a', title_font=dict(color='#1e434a'))
-    fig.update_yaxes(showgrid=True, gridcolor='#1e434a', title_font=dict(color='#1e434a'))
+    fig.update_xaxes(showgrid=True, gridcolor='#1e434a', tickfont=dict(color='#839496'), title_font=dict(color='#839496'))
+    fig.update_yaxes(showgrid=True, gridcolor='#1e434a', tickfont=dict(color='#839496'), title_font=dict(color='#839496'))
 
 
     # access codebook for full description of selected dataset to be updated under scatter plot
