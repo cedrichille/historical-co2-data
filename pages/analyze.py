@@ -171,7 +171,7 @@ def update_scatter_plot(selected_year, country_value, dataset_value, bubble_size
 
     # define the parameters of the scatter plot and update the data
     fig = px.scatter(df, x='country', y=dataset_value, size=bubble_size_value, size_max=70,
-                     labels={'country': 'Country', dataset_value: f"{dataset_value} *"})
+                     labels={'country': 'Country', dataset_value: f"{dataset_value} *"}, layout={'plot_bgcolor': '#002B36'})
     fig.update_layout(transition_duration=100)
 
     # access codebook for full description of selected dataset to be updated under scatter plot
