@@ -71,7 +71,7 @@ layout = dbc.Container(
                                    'font-style': 'italics'},
                             children=
                             '''
-                            This app was developed in 2022-2023 to enable improve our understanding of complex datasets
+                            This app was developed in 2023 to improve our understanding of complex datasets
                             related to global greenhouse gas (GHG) emissions. 
                             '''
                         ),
@@ -80,15 +80,15 @@ layout = dbc.Container(
                             '''
                            Based on the Our World in Data (OWID) CO2 database, this app uncovers new insights 
                            about how countries have contributed to climate change and what kind of characteristics
-                           can help understand trends in GHG emissions.
+                           underpin trends in GHG emissions.
                             '''),
                         html.Br(),
                         html.Br(),
-                        html.A("The app was developed by "),
+                        html.A("This app was developed by "),
                         html.A("Cedric Hille",
                                href='https://www.linkedin.com/in/cedric-hille-613166b9/',
                                target="_blank"),
-                        html.A(". The code is available on GitHub at "),
+                        html.A(", using Python and the Plotly Dash framework. The code is available on GitHub at "),
                         html.A("historical-co2-data.",
                                href='https://github.com/cedrichille/historical-co2-data',
                                target="_blank"),
