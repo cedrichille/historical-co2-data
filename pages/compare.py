@@ -149,15 +149,18 @@ def update_timeseries_plot(year_range, country_value, dataset_value):
 
     # define the parameters of the line plot and update the data
     fig = px.line(df, x='year', y=df.columns)
+    
     fig.update_xaxes(
         title_text='Year',
-        title_standoff=25
+        title_standoff=25,
+        showgrid=True, gridcolor='#1e434a', tickfont=dict(color='#839496'), title_font=dict(color='#839496')
     )
     fig.update_yaxes(
         title_text=f"{dataset_value} *",
-        title_standoff=25
+        title_standoff=25,
+        showgrid=True, gridcolor='#1e434a', tickfont=dict(color='#839496'), title_font=dict(color='#839496')
     )
-    fig.update_layout(transition_duration=100)
+    fig.update_layout(transition_duration=100, plot_bgcolor= "#002b36", paper_bgcolor="#1e434a")
 
     # access codebook for full description of selected dataset to be updated under scatter plot
     dataset_codebook_description = codebook.loc[codebook['column'] == dataset_value]['description'].values[0]
