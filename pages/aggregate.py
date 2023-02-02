@@ -266,13 +266,16 @@ def update_agg_plot(agg_generate, year_range, country_value, dataset_value, grou
         fig = px.bar(aggregated_df, x='year_range', y=dataset_value, color=aggregated_df.index)
         fig.update_xaxes(
             title_text='Year Range',
-            title_standoff=25
+            title_standoff=25,
+            showgrid=True, gridcolor='#1e434a', tickfont=dict(color='#839496'), title_font=dict(color='#839496')
         )
         fig.update_yaxes(
             title_text=f"{dataset_value} *",
-            title_standoff=25
+            title_standoff=25,
+            showgrid=True, gridcolor='#1e434a', tickfont=dict(color='#839496'), title_font=dict(color='#839496')
         )
-        fig.update_layout(transition_duration=100)
+        fig.update_layout(transition_duration=100, plot_bgcolor= "#002b36", paper_bgcolor="#1e434a",
+                          legend=dict(title_font=dict(color='#839496'),font=dict(color='#839496')))
 
         return fig, None, None, None, dataset_def, None
 
@@ -294,13 +297,16 @@ def update_agg_plot(agg_generate, year_range, country_value, dataset_value, grou
             fig = px.bar(df, x='year_range', y=dataset_value, color=df.index)
             fig.update_xaxes(
                 title_text='Year Range',
-                title_standoff=25
+                title_standoff=25,
+                showgrid=True, gridcolor='#1e434a', tickfont=dict(color='#839496'), title_font=dict(color='#839496')
             )
             fig.update_yaxes(
                 title_text=f"{dataset_value} *",
-                title_standoff=25
+                title_standoff=25,
+                showgrid=True, gridcolor='#1e434a', tickfont=dict(color='#839496'), title_font=dict(color='#839496')
             )
-            fig.update_layout(transition_duration=100)
+            fig.update_layout(transition_duration=100, plot_bgcolor= "#002b36", paper_bgcolor="#1e434a",
+                             legend=dict(title_font=dict(color='#839496'),font=dict(color='#839496')))
 
             # access codebook for full description of grouping dataset to be updated under plot
             group_codebook_description = codebook.loc[codebook['column'] ==
