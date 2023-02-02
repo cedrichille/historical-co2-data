@@ -1,6 +1,6 @@
 # Explore the History of Greenhouse Gas Emissions
 
-## Access the app at: https://co2-history.herokuapp.com/
+## Access the app at: https://www.ghghistory.app/
 
 Based on the owid/co2-data repository, this project provides a helpful tool for analyzing and visualizing the data on CO2 emissions by country through history, with the aim of identifying correlations between economic development, population, industry activity, and climate impact. 
 
