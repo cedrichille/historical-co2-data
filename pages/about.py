@@ -97,7 +97,7 @@ layout = dbc.Container(
                         html.A("Your feedback is welcome on GitHub or via LinkedIn."),
                         html.Br(),
                         html.Br(),
-                        html.A("Copyright &copy 2023 Cedric Hille.")
+                        html.A("Copyright © 2023 Cedric Hille.")
                     ],
                     width=9
                 )
